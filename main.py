@@ -35,26 +35,26 @@ def get_free_slots(busy_slots: list):
 
     while start < end_day and i < len(busy_sorted):
         start_busy = time_to_minutes(busy_sorted[i]['start'])
-        end_busy = time_to_minutes(busy_sorted[i]['stop'])
-        end = start + SLOT_TIME
+        stop_busy = time_to_minutes(busy_sorted[i]['stop'])
+        stop = start + SLOT_TIME
 
-        if end <= start_busy:
-            free_slots.append(start)
+        if stop <= start_busy:
+            free_slots.append({"start": minutes_to_time(start), "stop": minutes_to_time(stop)})
             start += SLOT_TIME
-        elif start > end_busy:
+        elif start > stop_busy:
             i += 1
         else:
             start += SLOT_TIME
-            if end >= end_busy:
+            if stop >= stop_busy:
                 i += 1
 
     # Adding remaining time slots if start < end_day
-    for time in range(start, end_day, SLOT_TIME):
-        free_slots.append(time)
+    for start_time in range(start, end_day, SLOT_TIME):
+        free_slots.append({"start": minutes_to_time(start_time), "stop": minutes_to_time(start_time + SLOT_TIME)})
 
     return free_slots
 
 
 if __name__ == '__main__':
     for free_slot in get_free_slots(busy):
-        print(minutes_to_time(free_slot))
+        print(free_slot)
